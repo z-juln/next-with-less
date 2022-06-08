@@ -19,7 +19,21 @@ function patchNextCSSWithLess(
 
 patchNextCSSWithLess();
 
-function withLess({ lessLoaderOptions = {}, ...nextConfig }) {
+function withLess({
+  lessLoaderOptions = {},
+  prependRules = [],
+  ...nextConfig
+}) {
+  let prependedLessModuleRules;
+  let prependedLessGlobalRules;
+
+  if (Array.isArray(prependRules)) {
+    prependedLessModuleRules = prependedLessGlobalRules = prependRules;
+  } else {
+    prependedLessModuleRules = prependRules.module;
+    prependedLessGlobalRules = prependRules.global;
+  }
+
   return Object.assign({}, nextConfig, {
     /**
      * @param {import('webpack').Configuration} config
@@ -89,13 +103,13 @@ function withLess({ lessLoaderOptions = {}, ...nextConfig }) {
 
       let lessModuleRule = cloneDeep(sassModuleRule);
 
-      const configureLessRule = (rule) => {
+      const configureLessRule = (rule, prependedLoaders) => {
         rule.test = new RegExp(rule.test.source.replace("(scss|sass)", "less"));
         // replace sass-loader (last entry) with less-loader
-        rule.use.splice(-1, 1, lessLoader);
+        rule.use.splice(-1, 1, lessLoader, ...prependedLoaders);
       };
 
-      configureLessRule(lessModuleRule);
+      configureLessRule(lessModuleRule, prependedLessModuleRules);
       cssRule.oneOf.splice(
         cssRule.oneOf.indexOf(sassModuleRule) + 1,
         0,
@@ -104,7 +118,7 @@ function withLess({ lessLoaderOptions = {}, ...nextConfig }) {
 
       if (sassGlobalRule) {
         let lessGlobalRule = cloneDeep(sassGlobalRule);
-        configureLessRule(lessGlobalRule);
+        configureLessRule(lessGlobalRule, prependedLessGlobalRules);
         cssRule.oneOf.splice(
           cssRule.oneOf.indexOf(sassGlobalRule) + 1,
           0,

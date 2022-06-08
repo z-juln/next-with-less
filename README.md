@@ -1,4 +1,4 @@
-# `next-with-less`
+# `@juln/next-with-less`
 
 > [Next.js](https://nextjs.org/) + [Less CSS](https://lesscss.org/) Support
 
@@ -12,9 +12,9 @@ Tested with `next@11.0.1` (with webpack5), `next@12.0.7`, and `antd@4.15.x`.
 ## Install
 
 ```sh
-yarn add next-with-less
+yarn add @juln/next-with-less
 
-npm i next-with-less
+npm i @juln/next-with-less
 ```
 
 Peer dependencies to install: `less` `less-loader`.
@@ -23,9 +23,21 @@ Peer dependencies to install: `less` `less-loader`.
 
 ```js
 // next.config.js
-const withLess = require("next-with-less");
+const withLess = require("@juln/next-with-less");
 
 module.exports = withLess({
+  // 加在less-loader后面的loader
+  prependRules: [
+    {
+      loader: 'style-resources-loader',
+      options: {
+        patterns: [
+          path.resolve(__dirname,'./styles/common.less'),
+        ],
+      },
+    },
+    // ...
+  ],
   lessLoaderOptions: {
     /* ... */
   },
@@ -40,7 +52,7 @@ You can see all the options available to `less-loader` [here](https://webpack.js
 // next.config.js
 const withPlugins = require("next-compose-plugins");
 
-const withLess = require("next-with-less");
+const withLess = require("@juln/next-with-less");
 
 const plugins = [
   /* ...other plugins... */
@@ -63,7 +75,7 @@ To override some of `antd` [default variables](https://ant.design/docs/react/cus
 
 ```js
 // next.config.js
-const withLess = require("next-with-less");
+const withLess = require("@juln/next-with-less");
 
 module.exports = withLess({
   lessLoaderOptions: {

@@ -1,5 +1,7 @@
 # `@juln/next-with-less`
 
+> 从 [next-with-less](https://github.com/elado/next-with-less) 中fork并增强了一些功能
+
 > [Next.js](https://nextjs.org/) + [Less CSS](https://lesscss.org/) Support
 
 Next.js supports SASS/SCSS, but not Less. This plugin adds Less support by duplicating SASS webpack rules and adding support for `.less` files with `less-loader`.
